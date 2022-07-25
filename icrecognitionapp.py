@@ -35,7 +35,7 @@ def summary():
             sign = "Wrong Identification card. Please try again!"
             print(sign)
             
-        return (sign)
+        return jsonify(sign)
 
 if __name__ == '__main__':   
     app.run(host = '0.0.0.0',port=5000,debug=True)
