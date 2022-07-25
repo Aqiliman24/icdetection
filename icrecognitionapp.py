@@ -20,7 +20,6 @@ app = Flask(__name__)
 @app.route("/icrecognition", methods=['GET', 'POST'])
 def summary():
     # uploads_dir = os.path.join('uploads')
-    # os.makedirs(uploads_dir)
    
     ic = request.files['ic']
     print (type(ic))
