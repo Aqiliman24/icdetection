@@ -2,9 +2,6 @@
 from keras.models import load_model
 from flask import *
 from PIL import Image
-import os
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import  FileStorage
 import numpy
 
 model = load_model('icrecognition.h5')
