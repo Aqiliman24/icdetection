@@ -2,7 +2,11 @@
 from keras.models import load_model
 from flask import *
 from PIL import Image
-import numpy
+from werkzeug.utils import secure_filename
+import cv2
+import numpy as np
+import easyocr
+import os
 
 model = load_model('icrecognition.h5')
 
@@ -11,32 +15,62 @@ classes = {
     1 : 'Pain'
 }
 
+def textprocessing(img):
+   
+    print (img)
+    img = cv2.imread(img)
+    
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(src=gray, ksize=(5, 5), sigmaX=0, sigmaY=0) #Bluring image in a small amount
+    filter = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]) # Creating our sharpening filter
+
+    sharpen_img = cv2.filter2D(gray,-1,filter) # Applying cv2.filter2D sharpening function on image
+
+    reader = easyocr.Reader(['en'])
+    result = reader.readtext(sharpen_img)
+
+    result_val = " "
+    for x in result:
+        result_val += (x[1]+",")
+
+    result_val.strip()
+
+    return (result_val)
+
 
 # main -----------------------------------------------------------------------------------------------------------------------
 app = Flask(__name__)
 @app.route("/icrecognition", methods=['GET', 'POST'])
 def summary():
-    # uploads_dir = os.path.join('uploads')
-   
+    uploads_dir = os.path.join('ic')
     ic = request.files['ic']
-    print (type(ic))
-    # ic.save(os.path.join(uploads_dir, secure_filename(ic.filename)))
+    
     if ic != '':
         image = Image.open(ic)
-        image = image.resize((200,200))
-        image = numpy.expand_dims(image, axis = 0)
-        image = numpy.array(image)
-        pred = model.predict([image])[0]
+        image.save(os.path.join(uploads_dir, secure_filename(ic.filename)))
+        resizeimage = image.resize((200,200))
+        resizeimage = np.expand_dims(resizeimage, axis = 0)
+        resizeimage = np.array(resizeimage)
+        pred = model.predict([resizeimage])[0]
+        icpath = ic.filename
+        icpath = str('ic/' + icpath)
+
+        dataic = textprocessing(icpath)
 
         if (pred == 0):
-            sign = "Success"
-            print(sign)
+            data = {
+                "Status" : "True",
+                "Extraction" : dataic
+            }
         else:
-            sign = "Wrong Identification card. Please try again!"
-            print(sign)
-            
-        return jsonify(sign)
+            data = {
+                "Status" : "False"
+            }
+
+        os.remove(icpath)
+        return jsonify(data)
+
 
 if __name__ == '__main__':   
     app.run(host = '0.0.0.0',port=5000,debug=True)
-    # main -----------------------------------------------------------------------------------------------------------------------------
+# main ----------------------------------------------------------------------------------------------------------------------------
