@@ -1,4 +1,5 @@
 
+from cgitb import html
 from keras.models import load_model
 from flask import *
 from PIL import Image
@@ -40,7 +41,8 @@ def textprocessing(img):
 
 # main -----------------------------------------------------------------------------------------------------------------------
 app = Flask(__name__)
-@app.route("/icrecognition", methods=['GET', 'POST'])
+print ("Hello")
+@app.route("/", methods=['GET', 'POST'])
 def summary():
     uploads_dir = os.path.join('ic')
     ic = request.files['ic']
@@ -73,4 +75,5 @@ def summary():
 
 if __name__ == '__main__':   
     app.run(host = '0.0.0.0',port=8001,debug=True)
+    
 # main ----------------------------------------------------------------------------------------------------------------------------
