@@ -44,7 +44,7 @@ app = Flask(__name__)
 print ("Hello")
 @app.route("/", methods=['GET', 'POST'])
 def summary():
-    uploads_dir = os.path.join('ic')
+    uploads_dir = os.path.join('')
     ic = request.files['ic']
     
     if ic != '':
@@ -55,7 +55,7 @@ def summary():
         resizeimage = np.array(resizeimage)
         pred = model.predict([resizeimage])[0]
         icpath = ic.filename
-        icpath = str('ic/' + icpath)
+        icpath = str(icpath)
 
         dataic = textprocessing(icpath)
 
@@ -74,6 +74,6 @@ def summary():
 
 
 if __name__ == '__main__':   
-    app.run(host = '0.0.0.0',port=8001,debug=True)
+git a    app.run(host = '0.0.0.0',port=8001,debug=True)
     
 # main ----------------------------------------------------------------------------------------------------------------------------
