@@ -65,11 +65,10 @@ def summary():
             data = {
                 "status" : bool(true),
                 "extraction" : dataic
-
             }
         else:
             data = {
-                "status" : bool(false)
+                "tatus" : bool(false)
             }
 
         os.remove(icpath)
