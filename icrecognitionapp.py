@@ -47,16 +47,18 @@ def summary():
     uploads_dir = os.path.join('')
     ic = request.files['ic']
     
+    
     if ic != '':
         image = Image.open(ic)
-        image.save(os.path.join(uploads_dir, secure_filename(ic.filename)))
+        image = image.convert("RGB")
+        image.save(os.path.join(uploads_dir, secure_filename("uploadedimage.jpg")))
+        # image.save(os.path.join(uploads_dir, secure_filename(image.filename)))
         resizeimage = image.resize((200,200))
         resizeimage = np.expand_dims(resizeimage, axis = 0)
         resizeimage = np.array(resizeimage)
         pred = model.predict([resizeimage])[0]
-        icpath = ic.filename
+        icpath = 'uploadedimage.jpg'
         icpath = str(icpath)
-
         dataic = textprocessing(icpath)
 
         if (pred == 0):
@@ -71,6 +73,9 @@ def summary():
 
         os.remove(icpath)
         return jsonify(data)
+
+    else:
+        return ('error')
 
 
 if __name__ == '__main__':   
