@@ -3,6 +3,7 @@ from cgitb import html
 from keras.models import load_model
 from flask import *
 from PIL import Image
+from sqlalchemy import false, true
 from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -52,7 +53,6 @@ def summary():
         image = Image.open(ic)
         image = image.convert("RGB")
         image.save(os.path.join(uploads_dir, secure_filename("uploadedimage.jpg")))
-        # image.save(os.path.join(uploads_dir, secure_filename(image.filename)))
         resizeimage = image.resize((200,200))
         resizeimage = np.expand_dims(resizeimage, axis = 0)
         resizeimage = np.array(resizeimage)
@@ -63,12 +63,13 @@ def summary():
 
         if (pred == 0):
             data = {
-                "Status" : "True",
-                "Extraction" : dataic
+                "status" : bool(true),
+                "extraction" : dataic
+
             }
         else:
             data = {
-                "Status" : "False"
+                "status" : bool(false)
             }
 
         os.remove(icpath)
